@@ -42,7 +42,7 @@ Must contain these columns:
 
 ```text
 .
-├── script.py
+├── train_reviews.py
 ├── train.csv
 ├── test.csv
 └── output/
@@ -59,7 +59,7 @@ python train_reviews.py --train train.csv --test test.csv --outdir output
 Example with custom settings:
 
 ```bash
-python script.py --train train.csv --test test.csv --outdir results --cv 5 --n-iter 15
+python train_reviews.py --train train.csv --test test.csv --outdir results --cv 5 --n-iter 15
 ```
 
 ## Command-line arguments
