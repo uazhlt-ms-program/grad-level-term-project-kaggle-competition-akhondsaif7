@@ -1,17 +1,114 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/uhZ6joRH)
-# Task
+# Review Classifier
 
-The task is described at [https://uazhlt-ms-program.github.io/ling-539-competition-2026/assignments/class-competition/](https://uazhlt-ms-program.github.io/ling-539-competition-2026/assignments/class-competition/)
+A Python project that trains a TF-IDF + Logistic Regression text classifier for movie/TV reviews, tunes hyperparameters with randomized cross-validation, evaluates on a holdout split, and generates test-set predictions.
 
-The competition is hosted at [https://www.kaggle.com/competitions/ling-539-competition-2026](https://www.kaggle.com/competitions/ling-539-competition-2026)
+## Features
 
-**To join the competition, you must accept it at the following URL**: [https://www.kaggle.com/t/03c8dd2e91474ec1b64203601079805b](https://www.kaggle.com/t/03c8dd2e91474ec1b64203601079805b)
+- Reads training and test data from CSV files.
+- Validates required columns before training.
+- Converts review text into TF-IDF word and bigram features.
+- Tunes model hyperparameters with `RandomizedSearchCV`.
+- Evaluates performance using macro F1 on an untouched validation split.
+- Retrains the best model on all labeled data before test prediction.
+- Saves predictions, metrics, best parameters, a text report, and the trained model.
 
-# Notes
-- This project involves a **performance evaluation** as well as your **graded assessment**. It's important to keep these two things separate in your mind.
-  - The rubric which will be used to assess your submission *for a grade* (ie, not to evaluate the performance of your model) is in the D2L assignment item
-  - You are permitted to propose more than one classification model or approach. However, as described on the assessment rubric, **at least one of your submitted models must use one or more of the classification algorithms covered in this course.** (For more details related to assessment, be sure you understand the details of that rubric)
-  - The performance of your model will be evaluated by Kaggle, and your model's performance will be ranked against other class submissions. The performance of your model is **one**, but not the only, factor by which your model will be assessed for a grade
-- You are encouraged, but not obligated, to use Python
-- You may delete or alter any files in this repository
-- You are free to add dependencies, **however**, ensure that your code can be installed/used on another machine running Linux or MacOS (consider containerizing your project with Docker or an equivalent technology)
+## Requirements
+
+- Python
+- pip
+
+Install dependencies:
+
+```bash
+pip install scikit-learn pandas numpy joblib
+```
+
+## Expected files
+
+### `train.csv`
+Must contain these columns:
+
+- `ID` - unique row identifier
+- `TEXT` - review text
+- `LABEL` - binary class label, typically `0` or `1`
+
+### `test.csv`
+Must contain these columns:
+
+- `ID` - unique row identifier
+- `TEXT` - review text
+
+## Project structure
+
+```text
+.
+├── script.py
+├── train.csv
+├── test.csv
+└── output/
+```
+
+## How to run
+
+Run:
+
+```bash
+python train_reviews.py --train train.csv --test test.csv --outdir output
+```
+
+Example with custom settings:
+
+```bash
+python script.py --train train.csv --test test.csv --outdir results --cv 5 --n-iter 15
+```
+
+## Command-line arguments
+
+| Argument | Default | Description |
+|---|---|---|
+| `--train` | `train.csv` | Path to the training CSV |
+| `--test` | `test.csv` | Path to the test CSV |
+| `--outdir` | `output` | Directory where artifacts are written |
+| `--cv` | `5` | Number of cross-validation folds |
+| `--n-iter` | `15` | Number of randomized search iterations |
+
+## Output files
+
+After a successful run, the output directory will contain:
+
+- `submission.csv` - predicted labels for the test set
+- `model.joblib` - trained scikit-learn pipeline
+- `metrics.csv` - best cross-validation F1 and heldout F1
+- `best_params.txt` - best hyperparameters found during search
+- `report.txt` - classification report and confusion matrix
+
+## Workflow summary
+
+1. Load and validate `train.csv` and `test.csv`.
+2. Fill missing text values with empty strings.
+3. Split labeled data into training and validation sets.
+4. Build a pipeline with text selection, TF-IDF, and Logistic Regression.
+5. Tune hyperparameters using randomized search with stratified cross-validation.
+6. Evaluate the best model on the untouched validation split.
+7. Retrain the best model on the full labeled dataset.
+8. Predict labels for the test set and save all artifacts.
+
+## Notes
+
+- The project assumes a binary classification task.
+- Input CSV paths are relative to the working directory.
+- The trained model is saved with `joblib`, so it can be loaded later.
+
+## Example output
+
+Typical console output looks like:
+
+```text
+Best CV F1 macro (train only): 0.84213
+Holdout F1 macro (true generalization): 0.83547
+Wrote: output/submission.csv
+Wrote: output/model.joblib
+Wrote: output/metrics.csv
+Wrote: output/best_params.txt
+Wrote: output/report.txt
+```
