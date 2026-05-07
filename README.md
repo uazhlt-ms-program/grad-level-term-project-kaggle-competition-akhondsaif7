@@ -104,11 +104,11 @@ After a successful run, the output directory will contain:
 Typical console output looks like:
 
 ```text
-Best CV F1 macro (train only): 0.84213
-Holdout F1 macro (true generalization): 0.83547
-Wrote: output/submission.csv
-Wrote: output/model.joblib
-Wrote: output/metrics.csv
-Wrote: output/best_params.txt
-Wrote: output/report.txt
+Best CV F1 macro (train only): 0.92452
+Holdout F1 macro (true generalization): 0.92227
+Wrote: output\submission.csv
+Wrote: output\model.joblib
+Wrote: output\metrics.csv
+Wrote: output\best_params.txt
+Wrote: output\report.txt
 ```
